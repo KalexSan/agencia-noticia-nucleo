@@ -41,3 +41,6 @@ logs/
 
 # --- Arquivos Temporários ---
 tmp/
+
+# --- Outros ---
+docs/
