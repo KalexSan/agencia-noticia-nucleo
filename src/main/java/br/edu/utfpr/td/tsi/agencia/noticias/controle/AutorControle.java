@@ -1,9 +1,5 @@
 package br.edu.utfpr.td.tsi.agencia.noticias.controle;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,22 +11,21 @@ import br.edu.utfpr.td.tsi.agencia.noticias.service.AutorService;
 
 @Controller
 public class AutorControle {
-	
+
 	@Autowired
 	private AutorService autorService;
-	
+
 	@GetMapping(value = "/cadastrarAutor")
 	public String mostrarPaginaCadastroAutor() {
 		return "cadastrarAutor";
 	}
-	
+
 	@PostMapping(value = "/cadastrarAutor")
 	public String receberDadosFormulario(Autor autor, Model model) {
 		try {
 			autorService.cadastrar(autor);
 			return "redirect:/";
-		}
-		catch (RuntimeException e) {
+		} catch (RuntimeException e) {
 			String motivo = e.getMessage();
 			model.addAttribute("motivo", motivo);
 			return "erro";

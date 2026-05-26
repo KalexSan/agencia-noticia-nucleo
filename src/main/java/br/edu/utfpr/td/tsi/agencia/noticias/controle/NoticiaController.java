@@ -1,7 +1,6 @@
 package br.edu.utfpr.td.tsi.agencia.noticias.controle;
 
 import java.time.LocalDate;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +21,7 @@ public class NoticiaController {
 
 	@Autowired
 	private AutorRepository autorRepository;
-	
+
 	@Autowired
 	private NoticiaRepository noticiaRepository;
 
@@ -30,12 +29,12 @@ public class NoticiaController {
 	public String exibirPaginaCadastrarNoticia(Model model) {
 		List<Autor> listaAutores = autorRepository.findAll();
 		model.addAttribute("autores", listaAutores);
-		
+
 		return "cadastrarNoticia";
 	}
 
 	@PostMapping(value = "/cadastrarNoticia")
-	public String cadastrarDocumento(Noticia noticia ) {
+	public String cadastrarDocumento(Noticia noticia) {
 		noticia.setDataCriacao(LocalDate.now());
 		noticia.setId(UUID.randomUUID().toString());
 		noticiaRepository.insert(noticia);
@@ -59,18 +58,17 @@ public class NoticiaController {
 		noticiaRepository.deleteById(idNoticia);
 		return "index";
 	}
-	
+
 	@GetMapping(value = "/editarNoticia")
-	public String mostrarpaginaEditaNoticia(@RequestParam String idNoticia,  Model model) {
+	public String mostrarpaginaEditaNoticia(@RequestParam String idNoticia, Model model) {
 		Noticia noticia = noticiaRepository.findById(idNoticia).orElse(null);
 		model.addAttribute("noticia", noticia);
 		return "editarNoticia";
 	}
-	
+
 	@PostMapping(value = "/editarNoticia")
 	public String editaNoticia(@RequestParam String idNoticia, Noticia noticia) {
 		noticiaRepository.save(noticia);
 		return "redirect:listarNoticias";
 	}
 }
-
