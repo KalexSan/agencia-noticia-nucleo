@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notícias Cadastradas | Agência de Notícias Web</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-blue-900 text-white shadow-lg">
+    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+      <h1 class="text-2xl font-bold tracking-wide">📰 Agência de Notícias Web</h1>
+      <nav class="space-x-6">
+        <a href="cadastrarAutor" class="hover:text-yellow-300 transition">Cadastrar Autor</a>
+        <a href="cadastrarNoticia" class="hover:text-yellow-300 transition">Cadastrar Notícia</a>
+        <a href="listarNoticias" class="hover:text-yellow-300 transition">Listar Notícias</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="flex-grow px-4 py-8 max-w-6xl mx-auto w-full">
+    <h2 class="text-3xl font-semibold text-blue-900 mb-6 text-center">
+      Notícias Cadastradas
+    </h2>
+
+    <!-- FILTRO POR AUTOR -->
+    <form th:action="@{/listarNoticias}" method="get" class="mb-6 flex items-center gap-3">
+      <label for="idAutor" class="text-blue-900 font-medium">Filtrar por autor:</label>
+      <select id="idAutor" name="idAutor" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-blue-200">
+        <option value="">Todos</option>
+        <option th:each="autor : ${autores}"
+                th:value="${autor.id}"
+                th:text="${autor.nome}"
+                th:selected="${autor.id == idAutorSelecionado}">
+        </option>
+      </select>
+      <button type="submit" class="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">
+        Filtrar
+      </button>
+    </form>
+
+    <!-- TABELA DE NOTÍCIAS -->
+    <div class="overflow-x-auto bg-white shadow-lg rounded-2xl">
+      <table class="min-w-full border-collapse">
+        <thead class="bg-blue-900 text-white">
+          <tr>
+            <th class="px-4 py-3 text-left font-medium">Autor</th>
+            <th class="px-4 py-3 text-left font-medium">Título</th>
+            <th class="px-4 py-3 text-left font-medium">Assunto</th>
+            <th class="px-4 py-3 text-left font-medium">Conteúdo</th>
+            <th class="px-4 py-3 text-center font-medium">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="doc : ${noticias}" class="hover:bg-gray-50 border-b">
+            <td class="px-4 py-3" th:text="${doc.autor.nome}"></td>
+            <td class="px-4 py-3 font-semibold" th:text="${doc.titulo}"></td>
+            <td class="px-4 py-3" th:text="${doc.assunto}"></td>
+            <td class="px-4 py-3 text-gray-700" th:text="${doc.conteudo}"></td>
+            <td class="px-4 py-3 flex justify-center gap-3">
+              <a th:href="@{editarNoticia(idNoticia=${doc.id})}" 
+                 class="text-blue-700 hover:text-blue-900 transition" title="Editar">
+                <i data-lucide="edit" class="w-5 h-5"></i>
+              </a>
+              <a th:href="@{removerNoticia(idNoticia=${doc.id})}" 
+                 class="text-red-600 hover:text-red-800 transition" title="Remover">
+                <i data-lucide="trash-2" class="w-5 h-5"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-200 text-gray-700 text-center py-4 text-sm">
+    © 2025 Agência de Notícias Web. Todos os direitos reservados.
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

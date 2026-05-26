@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Autor | Agência de Notícias Web</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-blue-900 text-white shadow-lg">
+    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+      <h1 class="text-2xl font-bold tracking-wide">📰 Agência de Notícias Web</h1>
+      <nav class="space-x-6">
+        <a href="cadastrarAutor" class="hover:text-yellow-300 transition">Cadastrar Autor</a>
+        <a href="cadastrarNoticia" class="hover:text-yellow-300 transition">Cadastrar Notícia</a>
+        <a href="listarNoticias" class="hover:text-yellow-300 transition">Listar Notícias</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="flex-grow flex flex-col items-center justify-center px-4">
+    <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-lg">
+      <h2 class="text-2xl font-semibold text-blue-900 text-center mb-6">
+        Cadastro de Autor
+      </h2>
+
+      <form method="POST" action="cadastrarAutor" class="space-y-4">
+        <!-- Nome -->
+        <div>
+          <label for="nome" class="block text-gray-700 font-medium mb-1">
+            Nome do Autor
+          </label>
+          <input type="text" id="nome" name="nome"
+                 class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+        </div>
+
+        <!-- E-mail -->
+        <div>
+          <label for="email" class="block text-gray-700 font-medium mb-1">
+            E-mail do Autor
+          </label>
+          <input type="email" id="email" name="email"
+                 class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+        </div>
+
+        <!-- Data de Nascimento -->
+        <div>
+          <label for="dataNascimento" class="block text-gray-700 font-medium mb-1">
+            Data de Nascimento
+          </label>
+          <input type="date" id="dataNascimento" name="dataNascimento"
+                 class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+        </div>
+
+        <!-- Botões -->
+        <div class="flex justify-between pt-4">
+          <a href="/" class="text-gray-600 hover:underline">← Voltar</a>
+          <button type="submit"
+                  class="bg-blue-900 text-white px-6 py-2 rounded-xl shadow-md hover:bg-blue-800 transition">
+            Cadastrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-200 text-gray-700 text-center py-4 text-sm">
+    © 2025 Agência de Notícias Web. Todos os direitos reservados.
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agência de Notícias Web</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-blue-900 text-white shadow-lg">
+    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+      <h1 class="text-2xl font-bold tracking-wide">📰 Agência de Notícias Web</h1>
+      <nav class="space-x-6">
+        <a href="cadastrarAutor" class="hover:text-yellow-300 transition">Cadastrar Autor</a>
+        <a href="cadastrarNoticia" class="hover:text-yellow-300 transition">Cadastrar Notícia</a>
+        <a href="listarNoticias" class="hover:text-yellow-300 transition">Listar Notícias</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="flex-grow flex flex-col items-center justify-center text-center px-4">
+    <h2 class="text-3xl font-semibold text-gray-800 mb-4">
+      Bem-vindo ao Sistema da Agência de Notícias Web
+    </h2>
+    <p class="text-gray-600 max-w-xl mb-8">
+      Aqui você pode cadastrar autores, criar novas notícias e listar as últimas publicações.
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl">
+      <a href="cadastrarAutor"
+         class="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl transition flex flex-col items-center">
+        <span class="text-blue-900 text-xl font-semibold mb-2">Cadastrar Autor</span>
+        <p class="text-gray-500 text-sm">Adicione novos colaboradores à sua agência.</p>
+      </a>
+
+      <a href="cadastrarNoticia"
+         class="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl transition flex flex-col items-center">
+        <span class="text-blue-900 text-xl font-semibold mb-2">Cadastrar Notícia</span>
+        <p class="text-gray-500 text-sm">Crie novas matérias e publique para todos verem.</p>
+      </a>
+
+      <a href="listarNoticias"
+         class="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl transition flex flex-col items-center">
+        <span class="text-blue-900 text-xl font-semibold mb-2">Listar Notícias</span>
+        <p class="text-gray-500 text-sm">Veja todas as notícias cadastradas e seus detalhes.</p>
+      </a>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-200 text-gray-700 text-center py-4 text-sm">
+    © 2025 Agência de Notícias Web. Todos os direitos reservados.
+  </footer>
+
+</body>
+</html>
