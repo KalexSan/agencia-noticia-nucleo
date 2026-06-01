@@ -5,7 +5,7 @@
 <body>
 <th:block th:replace="~{_fragments :: chrome('admin')}"></th:block>
 
-<main class="wrap" style="padding:0;">
+<main class="wrap main-flush">
   <div class="admin-shell">
     <aside class="admin-side">
       <p class="side-head">Conteúdo</p>
@@ -55,7 +55,7 @@
           <div class="field full" th:unless="${ehAdmin}">
             <label>Status inicial</label>
             <input type="hidden" name="status" value="EM_PRODUCAO">
-            <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg-section);border:1px dashed var(--line);border-radius:var(--radius-sm);">
+            <div class="status-lock">
               <span class="status-pill status-producao">Em produção</span>
               <span class="lockmsg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Sua notícia começa em produção. O admin aprova para publicar.</span>
             </div>

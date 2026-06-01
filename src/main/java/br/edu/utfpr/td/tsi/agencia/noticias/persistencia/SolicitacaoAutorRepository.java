@@ -11,4 +11,6 @@ public interface SolicitacaoAutorRepository extends MongoRepository<SolicitacaoA
 
 	List<SolicitacaoAutor> findByStatus(StatusSolicitacao status);
 
+	boolean existsByEmailAndStatus(String email, StatusSolicitacao status);
+
 }

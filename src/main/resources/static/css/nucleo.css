@@ -17,4 +17,5 @@
 @import url('grids-forms.css');   /* grids, formulários                     */
 @import url('footer-anim.css');   /* footer, animações, utilitários         */
 @import url('admin.css');         /* painel, status, badge, chip, segmented */
-@import url('pages.css');         /* login/auth, autores, alertas, intro    */
+@import url('article.css');       /* página de detalhe da notícia           */
+@import url('pages.css');         /* home, listagem, login, autores, erro    */

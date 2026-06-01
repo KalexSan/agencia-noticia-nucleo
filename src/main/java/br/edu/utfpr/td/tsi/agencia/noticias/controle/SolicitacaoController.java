@@ -27,16 +27,17 @@ public class SolicitacaoController {
 	// ===================== PÚBLICO =====================
 
 	@PostMapping(value = "/solicitarAutor")
-	public String solicitar(SolicitacaoAutor solicitacao, RedirectAttributes redirect, Model model) {
+	public String solicitar(SolicitacaoAutor solicitacao, RedirectAttributes redirect) {
 		try {
 			solicitacaoService.solicitar(solicitacao);
 			redirect.addFlashAttribute("solicitacaoEnviada",
 					"Pedido enviado! Nossa equipe vai avaliar e entrar em contato.");
-			return "redirect:/listarAutores";
 		} catch (RuntimeException e) {
-			model.addAttribute("motivo", e.getMessage());
-			return "erro";
+			// Em vez de ir para a página de erro, devolve a mensagem para exibir
+			// no próprio formulário (alerta abaixo, no lugar do alerta de sucesso).
+			redirect.addFlashAttribute("solicitacaoErro", e.getMessage());
 		}
+		return "redirect:/listarAutores";
 	}
 
 	// ===================== ADMIN =====================

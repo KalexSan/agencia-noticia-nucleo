@@ -3,6 +3,7 @@ package br.edu.utfpr.td.tsi.agencia.noticias.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,6 +27,9 @@ class SolicitacaoAutorServiceImplTest {
     @Mock
     private SolicitacaoAutorRepository solicitacaoRepository;
 
+    @Mock
+    private br.edu.utfpr.td.tsi.agencia.noticias.persistencia.AutorRepository autorRepository;
+
     @InjectMocks
     private SolicitacaoAutorServiceImpl service;
 
@@ -34,6 +38,10 @@ class SolicitacaoAutorServiceImplTest {
         SolicitacaoAutor s = new SolicitacaoAutor();
         s.setNome("Helena");
         s.setEmail("helena@exemplo.com");
+
+        when(autorRepository.existsByEmail("helena@exemplo.com")).thenReturn(false);
+        when(solicitacaoRepository.existsByEmailAndStatus("helena@exemplo.com", StatusSolicitacao.PENDENTE))
+                .thenReturn(false);
 
         service.solicitar(s);
 
@@ -53,6 +61,32 @@ class SolicitacaoAutorServiceImplTest {
 
         assertThrows(RuntimeException.class, () -> service.solicitar(s));
         verify(solicitacaoRepository, never()).insert(s);
+    }
+
+    @Test
+    void solicitarDeveFalharQuandoEmailJaEhDeAutor() {
+        SolicitacaoAutor s = new SolicitacaoAutor();
+        s.setNome("Helena");
+        s.setEmail("ja@existe.com");
+
+        when(autorRepository.existsByEmail("ja@existe.com")).thenReturn(true);
+
+        assertThrows(RuntimeException.class, () -> service.solicitar(s));
+        verify(solicitacaoRepository, never()).insert(any(SolicitacaoAutor.class));
+    }
+
+    @Test
+    void solicitarDeveFalharQuandoJaExisteSolicitacaoPendenteComMesmoEmail() {
+        SolicitacaoAutor s = new SolicitacaoAutor();
+        s.setNome("Helena");
+        s.setEmail("pendente@exemplo.com");
+
+        when(autorRepository.existsByEmail("pendente@exemplo.com")).thenReturn(false);
+        when(solicitacaoRepository.existsByEmailAndStatus("pendente@exemplo.com", StatusSolicitacao.PENDENTE))
+                .thenReturn(true);
+
+        assertThrows(RuntimeException.class, () -> service.solicitar(s));
+        verify(solicitacaoRepository, never()).insert(any(SolicitacaoAutor.class));
     }
 
     @Test

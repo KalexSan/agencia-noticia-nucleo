@@ -4,13 +4,12 @@
 <body>
 <th:block th:replace="~{_fragments :: chrome('')}"></th:block>
 
-<main class="wrap text-center" style="padding:90px 0;">
-  <span class="kicker ed-cultura" style="justify-content:center;">Algo deu errado</span>
-  <h1 style="font-family:var(--serif);font-weight:700;color:var(--ink);font-size:clamp(34px,6vw,60px);margin:16px 0;">Não foi possível concluir</h1>
-  <p style="color:var(--text);font-size:17px;max-width:48ch;margin:0 auto 10px;">Ocorreu um problema ao processar sua solicitação.</p>
-  <p th:if="${motivo != null}" th:text="${motivo}"
-     style="font-family:var(--mono);font-size:13px;color:var(--ed-cultura);background:color-mix(in srgb,var(--ed-cultura) 10%,transparent);display:inline-block;padding:10px 16px;border-radius:var(--radius-sm);margin:14px 0 26px;">Motivo do erro.</p>
-  <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;">
+<main class="wrap text-center error-page">
+  <span class="kicker ed-cultura centered">Algo deu errado</span>
+  <h1>Não foi possível concluir</h1>
+  <p class="error-text">Ocorreu um problema ao processar sua solicitação.</p>
+  <p th:if="${motivo != null}" th:text="${motivo}" class="error-reason">Motivo do erro.</p>
+  <div class="error-actions">
     <a class="btn btn-primary" th:href="@{/}">Voltar à página inicial</a>
     <a class="btn btn-ghost" th:href="@{/cadastrarAutor}">Tentar novamente</a>
   </div>

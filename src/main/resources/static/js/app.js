@@ -79,6 +79,55 @@
     } else {
       reveals.forEach((el) => el.classList.add("in"));
     }
+
+    /* ---------- <details> com abertura suave (altura animada) ---------- */
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    document.querySelectorAll("details.smooth-details").forEach((det) => {
+      const summary = det.querySelector("summary");
+      // O painel é tudo que vem depois do summary (envolvido para medir a altura)
+      const panel = det.querySelector(".details-panel");
+      if (!summary || !panel || reduceMotion) return;
+
+      let animating = false;
+
+      summary.addEventListener("click", (e) => {
+        e.preventDefault(); // controlamos a abertura manualmente
+        if (animating) return;
+        animating = true;
+
+        if (!det.open) {
+          // ABRIR: precisa estar "open" para medir a altura real do painel
+          det.open = true;
+          const h = panel.scrollHeight;
+          panel.animate(
+            [
+              { height: "0px", opacity: 0 },
+              { height: h + "px", opacity: 1 },
+            ],
+            { duration: 450, easing: "cubic-bezier(.22,.61,.36,1)" },
+          ).onfinish = () => {
+            animating = false;
+          };
+        } else {
+          // FECHAR: anima da altura atual até 0, depois remove o "open"
+          const h = panel.scrollHeight;
+          const anim = panel.animate(
+            [
+              { height: h + "px", opacity: 1 },
+              { height: "0px", opacity: 0 },
+            ],
+            { duration: 380, easing: "cubic-bezier(.22,.61,.36,1)" },
+          );
+          anim.onfinish = () => {
+            det.open = false;
+            animating = false;
+          };
+        }
+      });
+    });
   });
 
   /* ---------- Data por extenso (topbar) ---------- */

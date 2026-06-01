@@ -21,6 +21,11 @@
           <div class="avatar" th:classappend="'av' + ${it.index % 6}" th:text="${#strings.substring(autor.nome,0,1)}">A
           </div>
           <h3 th:text="${autor.nome}">Nome do Autor</h3>
+          <span class="role-tag role-admin"
+                th:if="${autor.perfil != null and autor.perfil.name() == 'ADMIN'}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+            Administrador
+          </span>
           <div class="email" th:text="${autor.email}">email@nucleo.com.br</div>
           <div class="born" th:if="${autor.dataNascimento != null}"
             th:text="'Desde ' + ${#temporals.format(autor.dataNascimento, 'yyyy')}">Desde 2020</div>
@@ -28,48 +33,91 @@
         </article>
       </div>
 
-      <!-- ===== MENSAGEM DE SUCESSO (pedido enviado) ===== -->
-      <div th:if="${solicitacaoEnviada != null}" th:text="${solicitacaoEnviada}" class="alert alert-success">
-        Pedido enviado!
-      </div>
+      <!-- ===== CHAMADA + FORM EM ACORDEÃO (apenas visitante NÃO logado) ===== -->
+      <!-- Abre sozinho se houver mensagem (sucesso OU erro); senão começa fechado -->
+      <details th:if="${usuarioLogado == null}" id="form-solicitacao" class="cta-reporter smooth-details"
+               th:attr="open=${solicitacaoEnviada != null or solicitacaoErro != null} ? 'open' : null">
+        <summary class="cta-reporter-summary">
+          <div class="cta-reporter-text">
+            <span class="kicker ed-tecnologia">Faça parte da redação</span>
+            <h2>Tem faro para notícia? Sua reportagem pode estar aqui.</h2>
+            <p>
+              A Núcleo está sempre em busca de repórteres e colaboradores com paixão por apuração
+              e boas histórias. Inscreva-se na nossa comunidade, ganhe acesso ao painel e publique
+              o seu próprio conteúdo com a sua assinatura.
+            </p>
+            <ul class="cta-reporter-perks">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Publique matérias com a sua assinatura
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Acesso ao painel da redação
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Alcance os leitores da Núcleo
+              </li>
+            </ul>
+            <span class="btn btn-primary cta-reporter-toggle">
+              <svg class="ico-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              <svg class="ico-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+              <span class="lbl-open">Quero me inscrever</span>
+              <span class="lbl-close">Fechar formulário</span>
+            </span>
+          </div>
+        </summary>
 
-      <!-- ===== FORM DE SOLICITAÇÃO (apenas visitante NÃO logado) ===== -->
-      <div th:if="${usuarioLogado == null}" class="form-card mb-form">
-        <div class="form-head">
-          <span class="kicker ed-tecnologia">Quero ser autor</span>
-          <h3>Solicitar cadastro</h3>
+        <!-- Painel animado em altura (JS) — envolve o formulário -->
+        <div class="details-panel">
+          <div class="cta-reporter-form form-card">
+            <div class="form-head">
+              <span class="kicker ed-tecnologia">Quero ser autor</span>
+              <h3>Solicitar cadastro</h3>
+            </div>
+            <p class="form-lead">
+              Envie seus dados. Um administrador vai avaliar o pedido e, se aprovado,
+              criará sua conta de acesso.
+            </p>
+            <form method="POST" th:action="@{/solicitarAutor}">
+              <div class="form-grid">
+                <div class="field full">
+                  <label for="sol-nome">Nome completo</label>
+                  <input id="sol-nome" name="nome" class="input" type="text" placeholder="Ex.: Helena Vasconcelos" required>
+                </div>
+                <div class="field">
+                  <label for="sol-email">E-mail</label>
+                  <input id="sol-email" name="email" class="input" type="email" placeholder="nome@exemplo.com" required>
+                </div>
+                <div class="field">
+                  <label for="sol-data">Data de nascimento</label>
+                  <input id="sol-data" name="dataNascimento" class="input" type="date" required>
+                </div>
+                <div class="field full">
+                  <label for="sol-msg">Mensagem <span class="hint">(conte sobre você e suas áreas)</span></label>
+                  <textarea id="sol-msg" name="mensagem" class="textarea" placeholder="Sobre que assuntos você gostaria de escrever?"></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                  Enviar solicitação
+                </button>
+              </div>
+            </form>
+
+            <!-- ===== MENSAGEM DE SUCESSO (pedido enviado) ===== -->
+            <div th:if="${solicitacaoEnviada != null}" th:text="${solicitacaoEnviada}" class="alert alert-success alert-inline">
+              Pedido enviado!
+            </div>
+            <!-- ===== MENSAGEM DE ERRO (e-mail repetido, etc.) ===== -->
+            <div th:if="${solicitacaoErro != null}" th:text="${solicitacaoErro}" class="alert alert-error alert-inline">
+              Não foi possível enviar a solicitação.
+            </div>
+          </div>
         </div>
-        <p class="form-lead">
-          Deseja escrever na Núcleo? Envie seus dados. Um administrador vai avaliar o pedido
-          e, se aprovado, criará sua conta de acesso.
-        </p>
-        <form method="POST" th:action="@{/solicitarAutor}">
-          <div class="form-grid">
-            <div class="field full">
-              <label for="sol-nome">Nome completo</label>
-              <input id="sol-nome" name="nome" class="input" type="text" placeholder="Ex.: Helena Vasconcelos" required>
-            </div>
-            <div class="field">
-              <label for="sol-email">E-mail</label>
-              <input id="sol-email" name="email" class="input" type="email" placeholder="nome@exemplo.com" required>
-            </div>
-            <div class="field">
-              <label for="sol-data">Data de nascimento</label>
-              <input id="sol-data" name="dataNascimento" class="input" type="date" required>
-            </div>
-            <div class="field full">
-              <label for="sol-msg">Mensagem <span class="hint">(conte sobre você e suas áreas)</span></label>
-              <textarea id="sol-msg" name="mensagem" class="textarea" placeholder="Sobre que assuntos você gostaria de escrever?"></textarea>
-            </div>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-              Enviar solicitação
-            </button>
-          </div>
-        </form>
-      </div>
+      </details>
 
       <!-- ESTADO VAZIO -->
       <div class="empty-page" th:if="${autores == null or autores.isEmpty()}">

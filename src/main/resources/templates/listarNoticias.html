@@ -6,17 +6,16 @@
 <th:block th:replace="~{_fragments :: chrome('noticias')}"></th:block>
 
 <main>
-  <section class="wrap" style="padding-top:32px;">
-    <div class="sec-head" style="border-top:none;padding-top:0;margin-bottom:18px;">
-      <h2 style="font-size:clamp(28px,4vw,42px);">Todas as notícias</h2>
-      <span style="font-family:var(--mono);font-size:12px;color:var(--muted);"
+  <section class="wrap section-top">
+    <div class="sec-head noticias-head">
+      <h2>Todas as notícias</h2>
+      <span class="count"
             th:text="${(noticias != null ? noticias.size() : 0)} + ' publicações'">0 publicações</span>
     </div>
 
     <!-- FILTRO POR AUTOR (espelha /listarNoticias?idAutor=) -->
-    <form th:action="@{/listarNoticias}" method="get"
-          style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;padding:16px 18px;background:var(--bg-section);border-radius:var(--radius);margin-bottom:30px;">
-      <div class="field" style="margin:0;min-width:240px;">
+    <form th:action="@{/listarNoticias}" method="get" class="filter-bar">
+      <div class="field">
         <label for="idAutor">Filtrar por autor</label>
         <select id="idAutor" name="idAutor" class="select">
           <option value="">Todos os autores</option>
@@ -33,13 +32,13 @@
   </section>
 
   <!-- GRID DE NOTÍCIAS -->
-  <section class="section" style="padding-top:0;">
+  <section class="section section-flush">
     <div class="wrap">
       <div class="grid-3" th:if="${noticias != null and !noticias.isEmpty()}">
         <article class="card reveal" th:each="n : ${noticias}">
           <a th:href="@{/detalheNoticia(idNoticia=${n.id})}">
             <div class="media">
-              <img th:if="${n.urlImagem != null and !n.urlImagem.isEmpty()}" th:src="${n.urlImagem}" th:alt="${n.titulo}" style="width:100%;border-radius:var(--radius);aspect-ratio:16/9;object-fit:cover;">
+              <img th:if="${n.urlImagem != null and !n.urlImagem.isEmpty()}" th:src="${n.urlImagem}" th:alt="${n.titulo}" class="ar-16x9">
               <div th:unless="${n.urlImagem != null and !n.urlImagem.isEmpty()}" class="ph r16x9" data-label="Foto 16:9"></div>
             </div>
             <span class="kicker" th:classappend="${edMap.containsKey(n.assunto) ? edMap.get(n.assunto) : 'ed-geral'}" th:text="${n.assunto}">Editoria</span>
@@ -55,10 +54,10 @@
       </div>
 
       <!-- ESTADO VAZIO -->
-      <div class="text-center" th:if="${noticias == null or noticias.isEmpty()}" style="padding:70px 0;">
-        <span class="kicker ed-geral" style="justify-content:center;">Sem resultados</span>
-        <h3 style="font-family:var(--serif);font-weight:700;color:var(--ink);font-size:26px;margin:12px 0;">Nenhuma notícia encontrada</h3>
-        <p style="color:var(--muted);">Tente remover o filtro ou cadastre uma nova matéria.</p>
+      <div class="empty-page pad-70" th:if="${noticias == null or noticias.isEmpty()}">
+        <span class="kicker ed-geral centered">Sem resultados</span>
+        <h3>Nenhuma notícia encontrada</h3>
+        <p>Tente remover o filtro ou cadastre uma nova matéria.</p>
       </div>
     </div>
   </section>

@@ -7,14 +7,14 @@
 
 <main>
   <!-- ===================== HERO ===================== -->
-  <section class="wrap" style="padding-top:30px;" th:if="${noticias != null and !noticias.isEmpty()}">
-    <div style="margin-bottom:16px;"><span class="breaking">Plantão</span></div>
+  <section class="wrap home-hero" th:if="${noticias != null and !noticias.isEmpty()}">
+    <div class="home-flag"><span class="breaking">Plantão</span></div>
     <div class="hero">
       <!-- Notícia em destaque = primeira da lista -->
       <article class="hero-lead" th:with="n=${noticias[0]}">
         <a th:href="@{/detalheNoticia(idNoticia=${n.id})}">
           <div class="media">
-            <img th:if="${n.urlImagem != null and !n.urlImagem.isEmpty()}" th:src="${n.urlImagem}" th:alt="${n.titulo}" style="width:100%;border-radius:var(--radius);aspect-ratio:3/2;object-fit:cover;">
+            <img th:if="${n.urlImagem != null and !n.urlImagem.isEmpty()}" th:src="${n.urlImagem}" th:alt="${n.titulo}" class="ar-3x2">
             <div th:unless="${n.urlImagem != null and !n.urlImagem.isEmpty()}" class="ph r3x2" data-label="Foto 3:2 — destaque"></div>
           </div>
           <span class="kicker" th:classappend="${edMap.containsKey(n.assunto) ? edMap.get(n.assunto) : 'ed-geral'}" th:text="${n.assunto}">Editoria</span>
@@ -35,7 +35,7 @@
            th:href="@{/detalheNoticia(idNoticia=${n.id})}">
           <span class="rank" th:text="${it.index}">1</span>
           <div>
-            <span class="kicker" style="font-size:10px;margin-bottom:5px;"
+            <span class="kicker"
                   th:classappend="${edMap.containsKey(n.assunto) ? edMap.get(n.assunto) : 'ed-geral'}" th:text="${n.assunto}">Editoria</span>
             <h4 th:text="${n.titulo}">Manchete secundária</h4>
             <div class="meta" th:text="${n.autor != null ? n.autor.nome : 'Redação'}">Autor</div>
@@ -58,7 +58,7 @@
                  th:remove="${it.index > 11} ? all : none">
           <a th:href="@{/detalheNoticia(idNoticia=${n.id})}">
             <div class="media">
-              <img th:if="${n.urlImagem != null and !n.urlImagem.isEmpty()}" th:src="${n.urlImagem}" th:alt="${n.titulo}" style="width:100%;border-radius:var(--radius);aspect-ratio:16/9;object-fit:cover;">
+              <img th:if="${n.urlImagem != null and !n.urlImagem.isEmpty()}" th:src="${n.urlImagem}" th:alt="${n.titulo}" class="ar-16x9">
               <div th:unless="${n.urlImagem != null and !n.urlImagem.isEmpty()}" class="ph r16x9" data-label="Foto 16:9"></div>
             </div>
             <span class="kicker" th:classappend="${edMap.containsKey(n.assunto) ? edMap.get(n.assunto) : 'ed-geral'}" th:text="${n.assunto}">Editoria</span>
@@ -76,10 +76,10 @@
   </section>
 
   <!-- ===================== ESTADO VAZIO ===================== -->
-  <section class="wrap text-center" th:if="${noticias == null or noticias.isEmpty()}" style="padding:80px 0;">
-    <span class="kicker ed-geral" style="justify-content:center;">Núcleo</span>
-    <h2 style="font-family:var(--serif);font-weight:700;color:var(--ink);font-size:34px;margin:14px 0;">Ainda não há notícias publicadas</h2>
-    <p style="color:var(--muted);max-width:46ch;margin:0 auto 24px;">Cadastre a primeira matéria pelo painel administrativo para vê-la aqui na página inicial.</p>
+  <section class="wrap empty-page pad-80" th:if="${noticias == null or noticias.isEmpty()}">
+    <span class="kicker ed-geral centered">Núcleo</span>
+    <h2>Ainda não há notícias publicadas</h2>
+    <p class="lead">Cadastre a primeira matéria pelo painel administrativo para vê-la aqui na página inicial.</p>
     <a class="btn btn-primary" th:href="@{/cadastrarNoticia}">Cadastrar primeira notícia</a>
   </section>
 </main>
