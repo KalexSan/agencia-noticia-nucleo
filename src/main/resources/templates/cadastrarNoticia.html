@@ -1,89 +1,84 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastrar Notícia | Agência de Notícias Web</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" data-page="admin"
+      th:with="ehAdmin=${usuarioLogado != null and usuarioLogado.perfil != null and usuarioLogado.perfil.name() == 'ADMIN'}">
+<head th:replace="~{_fragments :: head('Nova notícia — NÚCLEO')}"></head>
+<body>
+<th:block th:replace="~{_fragments :: chrome('admin')}"></th:block>
 
-  <!-- HEADER -->
-  <header class="bg-blue-900 text-white shadow-lg">
-    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-      <h1 class="text-2xl font-bold tracking-wide">📰 Agência de Notícias Web</h1>
-      <nav class="space-x-6">
-        <a href="cadastrarAutor" class="hover:text-yellow-300 transition">Cadastrar Autor</a>
-        <a href="cadastrarNoticia" class="hover:text-yellow-300 transition">Cadastrar Notícia</a>
-        <a href="listarNoticias" class="hover:text-yellow-300 transition">Listar Notícias</a>
+<main class="wrap" style="padding:0;">
+  <div class="admin-shell">
+    <aside class="admin-side">
+      <p class="side-head">Conteúdo</p>
+      <nav>
+        <a th:href="@{/admin}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Gerenciar notícias</a>
+        <a class="active" th:href="@{/cadastrarNoticia}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Nova notícia</a>
+        <a th:href="@{/cadastrarAutor}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg> Novo autor</a>
       </nav>
-    </div>
-  </header>
+    </aside>
 
-  <!-- CONTEÚDO PRINCIPAL -->
-  <main class="flex-grow flex flex-col items-center justify-center px-4">
-    <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-2xl">
-      <h2 class="text-2xl font-semibold text-blue-900 text-center mb-6">
-        Cadastro de Notícia
-      </h2>
+    <div class="admin-main">
+      <div class="panel-head">
+        <h1>Nova notícia</h1>
+        <p>Preencha os campos para publicar uma matéria. A data de criação é registrada automaticamente.</p>
+      </div>
 
-      <form method="POST" action="cadastrarNoticia" class="space-y-5">
-        
-        <!-- Autor -->
-        <div>
-          <label for="autor" class="block text-gray-700 font-medium mb-1">
-            Autor da Notícia
-          </label>
-          <select id="autor" name="autor.id"
-                  class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
-            <option value="">Selecione o autor</option>
-            <option th:each="autor : ${autores}" th:value="${autor.id}" th:text="${autor.nome}"></option>
-          </select>
+      <form class="form-card" method="POST" th:action="@{/cadastrarNoticia}">
+        <div class="form-grid">
+          <div class="field full">
+            <label for="titulo">Título</label>
+            <input id="titulo" name="titulo" class="input" type="text" placeholder="Ex.: Câmara aprova marco da inteligência artificial" required>
+          </div>
+          <div class="field">
+            <label for="assunto">Editoria <span class="hint">(assunto)</span></label>
+            <select id="assunto" name="assunto" class="select" required>
+              <option value="" disabled selected>Selecione…</option>
+              <option>Política</option><option>Economia</option><option>Mundo</option>
+              <option>Tecnologia</option><option>Cultura</option><option>Esportes</option><option>Ciência</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="autor">Autor</label>
+            <select id="autor" name="autor.id" class="select" required>
+              <option value="" disabled selected>Selecione…</option>
+              <option th:each="autor : ${autores}" th:value="${autor.id}" th:text="${autor.nome}">Nome</option>
+            </select>
+          </div>
+          <!-- STATUS: ADMIN escolhe; AUTOR fica travado em EM_PRODUCAO (enviado por hidden) -->
+          <div class="field full" th:if="${ehAdmin}">
+            <label for="status">Status inicial</label>
+            <select id="status" name="status" class="select">
+              <option value="EM_PRODUCAO" selected>Em produção</option>
+              <option value="INATIVA">Inativa (rascunho)</option>
+              <option value="CONCLUIDA">Concluída (publicar)</option>
+            </select>
+          </div>
+          <div class="field full" th:unless="${ehAdmin}">
+            <label>Status inicial</label>
+            <input type="hidden" name="status" value="EM_PRODUCAO">
+            <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg-section);border:1px dashed var(--line);border-radius:var(--radius-sm);">
+              <span class="status-pill status-producao">Em produção</span>
+              <span class="lockmsg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Sua notícia começa em produção. O admin aprova para publicar.</span>
+            </div>
+          </div>
+          <div class="field full">
+            <label for="urlImagem">URL da imagem <span class="hint">(opcional — campo novo no backend)</span></label>
+            <input id="urlImagem" name="urlImagem" class="input" type="url" placeholder="https://…/foto.jpg">
+          </div>
+          <div class="field full">
+            <label for="conteudo">Conteúdo</label>
+            <textarea id="conteudo" name="conteudo" class="textarea" placeholder="Escreva o corpo da matéria…" required></textarea>
+          </div>
         </div>
-
-        <!-- Título -->
-        <div>
-          <label for="titulo" class="block text-gray-700 font-medium mb-1">
-            Título
-          </label>
-          <input type="text" id="titulo" name="titulo"
-                 class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
-        </div>
-
-        <!-- Assunto -->
-        <div>
-          <label for="assunto" class="block text-gray-700 font-medium mb-1">
-            Assunto
-          </label>
-          <input type="text" id="assunto" name="assunto"
-                 class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
-        </div>
-
-        <!-- Conteúdo -->
-        <div>
-          <label for="conteudo" class="block text-gray-700 font-medium mb-1">
-            Conteúdo da Notícia
-          </label>
-          <textarea id="conteudo" name="conteudo" rows="8"
-                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-y" required></textarea>
-        </div>
-
-        <!-- Botões -->
-        <div class="flex justify-between pt-4">
-          <a href="/" class="text-gray-600 hover:underline">← Voltar</a>
-          <button type="submit"
-                  class="bg-blue-900 text-white px-6 py-2 rounded-xl shadow-md hover:bg-blue-800 transition">
-            Cadastrar
-          </button>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Publicar notícia</button>
+          <a class="btn btn-ghost" th:href="@{/admin}">Cancelar</a>
         </div>
       </form>
     </div>
-  </main>
+  </div>
+</main>
 
-  <!-- FOOTER -->
-  <footer class="bg-gray-200 text-gray-700 text-center py-4 text-sm">
-    © 2025 Agência de Notícias Web. Todos os direitos reservados.
-  </footer>
-
+<th:block th:replace="~{_fragments :: footer}"></th:block>
+<th:block th:replace="~{_fragments :: scripts}"></th:block>
 </body>
 </html>

@@ -1,59 +1,90 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agência de Notícias Web</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" data-page="home"
+      th:with="edMap=${ {'Política':'ed-politica','Economia':'ed-economia','Mundo':'ed-mundo','Tecnologia':'ed-tecnologia','Cultura':'ed-cultura','Esportes':'ed-esportes','Ciência':'ed-ciencia'} }">
+<head th:replace="~{_fragments :: head('NÚCLEO — Informação que conecta pessoas e fatos')}"></head>
+<body>
+<th:block th:replace="~{_fragments :: chrome('home')}"></th:block>
 
-  <!-- HEADER -->
-  <header class="bg-blue-900 text-white shadow-lg">
-    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-      <h1 class="text-2xl font-bold tracking-wide">📰 Agência de Notícias Web</h1>
-      <nav class="space-x-6">
-        <a href="cadastrarAutor" class="hover:text-yellow-300 transition">Cadastrar Autor</a>
-        <a href="cadastrarNoticia" class="hover:text-yellow-300 transition">Cadastrar Notícia</a>
-        <a href="listarNoticias" class="hover:text-yellow-300 transition">Listar Notícias</a>
-      </nav>
+<main>
+  <!-- ===================== HERO ===================== -->
+  <section class="wrap" style="padding-top:30px;" th:if="${noticias != null and !noticias.isEmpty()}">
+    <div style="margin-bottom:16px;"><span class="breaking">Plantão</span></div>
+    <div class="hero">
+      <!-- Notícia em destaque = primeira da lista -->
+      <article class="hero-lead" th:with="n=${noticias[0]}">
+        <a th:href="@{/detalheNoticia(idNoticia=${n.id})}">
+          <div class="media">
+            <img th:if="${n.urlImagem != null and !n.urlImagem.isEmpty()}" th:src="${n.urlImagem}" th:alt="${n.titulo}" style="width:100%;border-radius:var(--radius);aspect-ratio:3/2;object-fit:cover;">
+            <div th:unless="${n.urlImagem != null and !n.urlImagem.isEmpty()}" class="ph r3x2" data-label="Foto 3:2 — destaque"></div>
+          </div>
+          <span class="kicker" th:classappend="${edMap.containsKey(n.assunto) ? edMap.get(n.assunto) : 'ed-geral'}" th:text="${n.assunto}">Editoria</span>
+          <h1 th:text="${n.titulo}">Título da notícia em destaque</h1>
+          <p class="dek" th:text="${#strings.abbreviate(n.conteudo, 180)}">Resumo da matéria…</p>
+          <div class="meta">
+            <span class="byline" th:text="${n.autor != null ? n.autor.nome : 'Redação'}">Autor</span>
+            <span class="dot"></span>
+            <span th:text="${n.dataCriacao != null ? #temporals.format(n.dataCriacao, 'dd MMM yyyy') : ''}">data</span>
+          </div>
+        </a>
+      </article>
+
+      <!-- Mais lidas = próximas notícias -->
+      <aside class="hero-aside">
+        <div class="ha-head">Mais lidas agora</div>
+        <a class="story-row" th:each="n,it : ${noticias}" th:if="${it.index >= 1 and it.index <= 5}"
+           th:href="@{/detalheNoticia(idNoticia=${n.id})}">
+          <span class="rank" th:text="${it.index}">1</span>
+          <div>
+            <span class="kicker" style="font-size:10px;margin-bottom:5px;"
+                  th:classappend="${edMap.containsKey(n.assunto) ? edMap.get(n.assunto) : 'ed-geral'}" th:text="${n.assunto}">Editoria</span>
+            <h4 th:text="${n.titulo}">Manchete secundária</h4>
+            <div class="meta" th:text="${n.autor != null ? n.autor.nome : 'Redação'}">Autor</div>
+          </div>
+        </a>
+      </aside>
     </div>
-  </header>
+  </section>
 
-  <!-- CONTEÚDO PRINCIPAL -->
-  <main class="flex-grow flex flex-col items-center justify-center text-center px-4">
-    <h2 class="text-3xl font-semibold text-gray-800 mb-4">
-      Bem-vindo ao Sistema da Agência de Notícias Web
-    </h2>
-    <p class="text-gray-600 max-w-xl mb-8">
-      Aqui você pode cadastrar autores, criar novas notícias e listar as últimas publicações.
-    </p>
-
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl">
-      <a href="cadastrarAutor"
-         class="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl transition flex flex-col items-center">
-        <span class="text-blue-900 text-xl font-semibold mb-2">Cadastrar Autor</span>
-        <p class="text-gray-500 text-sm">Adicione novos colaboradores à sua agência.</p>
-      </a>
-
-      <a href="cadastrarNoticia"
-         class="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl transition flex flex-col items-center">
-        <span class="text-blue-900 text-xl font-semibold mb-2">Cadastrar Notícia</span>
-        <p class="text-gray-500 text-sm">Crie novas matérias e publique para todos verem.</p>
-      </a>
-
-      <a href="listarNoticias"
-         class="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl transition flex flex-col items-center">
-        <span class="text-blue-900 text-xl font-semibold mb-2">Listar Notícias</span>
-        <p class="text-gray-500 text-sm">Veja todas as notícias cadastradas e seus detalhes.</p>
-      </a>
+  <!-- ===================== ÚLTIMAS (grid) ===================== -->
+  <section class="section" th:if="${noticias != null and noticias.size() > 6}">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Últimas notícias</h2>
+        <a class="more" th:href="@{/listarNoticias}">Ver todas
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="grid-3">
+        <article class="card reveal" th:each="n,it : ${noticias}" th:if="${it.index > 5}"
+                 th:remove="${it.index > 11} ? all : none">
+          <a th:href="@{/detalheNoticia(idNoticia=${n.id})}">
+            <div class="media">
+              <img th:if="${n.urlImagem != null and !n.urlImagem.isEmpty()}" th:src="${n.urlImagem}" th:alt="${n.titulo}" style="width:100%;border-radius:var(--radius);aspect-ratio:16/9;object-fit:cover;">
+              <div th:unless="${n.urlImagem != null and !n.urlImagem.isEmpty()}" class="ph r16x9" data-label="Foto 16:9"></div>
+            </div>
+            <span class="kicker" th:classappend="${edMap.containsKey(n.assunto) ? edMap.get(n.assunto) : 'ed-geral'}" th:text="${n.assunto}">Editoria</span>
+            <h3 th:text="${n.titulo}">Título</h3>
+            <p class="dek" th:text="${#strings.abbreviate(n.conteudo, 120)}">Resumo…</p>
+            <div class="meta">
+              <span class="byline" th:text="${n.autor != null ? n.autor.nome : 'Redação'}">Autor</span>
+              <span class="dot"></span>
+              <span th:text="${n.dataCriacao != null ? #temporals.format(n.dataCriacao, 'dd MMM yyyy') : ''}">data</span>
+            </div>
+          </a>
+        </article>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <!-- FOOTER -->
-  <footer class="bg-gray-200 text-gray-700 text-center py-4 text-sm">
-    © 2025 Agência de Notícias Web. Todos os direitos reservados.
-  </footer>
+  <!-- ===================== ESTADO VAZIO ===================== -->
+  <section class="wrap text-center" th:if="${noticias == null or noticias.isEmpty()}" style="padding:80px 0;">
+    <span class="kicker ed-geral" style="justify-content:center;">Núcleo</span>
+    <h2 style="font-family:var(--serif);font-weight:700;color:var(--ink);font-size:34px;margin:14px 0;">Ainda não há notícias publicadas</h2>
+    <p style="color:var(--muted);max-width:46ch;margin:0 auto 24px;">Cadastre a primeira matéria pelo painel administrativo para vê-la aqui na página inicial.</p>
+    <a class="btn btn-primary" th:href="@{/cadastrarNoticia}">Cadastrar primeira notícia</a>
+  </section>
+</main>
 
+<th:block th:replace="~{_fragments :: footer}"></th:block>
+<th:block th:replace="~{_fragments :: scripts}"></th:block>
 </body>
 </html>

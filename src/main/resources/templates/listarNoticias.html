@@ -1,89 +1,70 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notícias Cadastradas | Agência de Notícias Web</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" data-page="noticias"
+      th:with="edMap=${ {'Política':'ed-politica','Economia':'ed-economia','Mundo':'ed-mundo','Tecnologia':'ed-tecnologia','Cultura':'ed-cultura','Esportes':'ed-esportes','Ciência':'ed-ciencia'} }">
+<head th:replace="~{_fragments :: head('Notícias — NÚCLEO')}"></head>
+<body>
+<th:block th:replace="~{_fragments :: chrome('noticias')}"></th:block>
 
-  <!-- HEADER -->
-  <header class="bg-blue-900 text-white shadow-lg">
-    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-      <h1 class="text-2xl font-bold tracking-wide">📰 Agência de Notícias Web</h1>
-      <nav class="space-x-6">
-        <a href="cadastrarAutor" class="hover:text-yellow-300 transition">Cadastrar Autor</a>
-        <a href="cadastrarNoticia" class="hover:text-yellow-300 transition">Cadastrar Notícia</a>
-        <a href="listarNoticias" class="hover:text-yellow-300 transition">Listar Notícias</a>
-      </nav>
+<main>
+  <section class="wrap" style="padding-top:32px;">
+    <div class="sec-head" style="border-top:none;padding-top:0;margin-bottom:18px;">
+      <h2 style="font-size:clamp(28px,4vw,42px);">Todas as notícias</h2>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--muted);"
+            th:text="${(noticias != null ? noticias.size() : 0)} + ' publicações'">0 publicações</span>
     </div>
-  </header>
 
-  <!-- CONTEÚDO PRINCIPAL -->
-  <main class="flex-grow px-4 py-8 max-w-6xl mx-auto w-full">
-    <h2 class="text-3xl font-semibold text-blue-900 mb-6 text-center">
-      Notícias Cadastradas
-    </h2>
-
-    <!-- FILTRO POR AUTOR -->
-    <form th:action="@{/listarNoticias}" method="get" class="mb-6 flex items-center gap-3">
-      <label for="idAutor" class="text-blue-900 font-medium">Filtrar por autor:</label>
-      <select id="idAutor" name="idAutor" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-blue-200">
-        <option value="">Todos</option>
-        <option th:each="autor : ${autores}"
-                th:value="${autor.id}"
-                th:text="${autor.nome}"
-                th:selected="${autor.id == idAutorSelecionado}">
-        </option>
-      </select>
-      <button type="submit" class="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">
+    <!-- FILTRO POR AUTOR (espelha /listarNoticias?idAutor=) -->
+    <form th:action="@{/listarNoticias}" method="get"
+          style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;padding:16px 18px;background:var(--bg-section);border-radius:var(--radius);margin-bottom:30px;">
+      <div class="field" style="margin:0;min-width:240px;">
+        <label for="idAutor">Filtrar por autor</label>
+        <select id="idAutor" name="idAutor" class="select">
+          <option value="">Todos os autores</option>
+          <option th:each="autor : ${autores}" th:value="${autor.id}" th:text="${autor.nome}"
+                  th:selected="${autor.id == idAutorSelecionado}">Nome</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
         Filtrar
       </button>
+      <a th:href="@{/listarNoticias}" class="btn btn-ghost" th:if="${idAutorSelecionado != null and !idAutorSelecionado.isEmpty()}">Limpar</a>
     </form>
+  </section>
 
-    <!-- TABELA DE NOTÍCIAS -->
-    <div class="overflow-x-auto bg-white shadow-lg rounded-2xl">
-      <table class="min-w-full border-collapse">
-        <thead class="bg-blue-900 text-white">
-          <tr>
-            <th class="px-4 py-3 text-left font-medium">Autor</th>
-            <th class="px-4 py-3 text-left font-medium">Título</th>
-            <th class="px-4 py-3 text-left font-medium">Assunto</th>
-            <th class="px-4 py-3 text-left font-medium">Conteúdo</th>
-            <th class="px-4 py-3 text-center font-medium">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="doc : ${noticias}" class="hover:bg-gray-50 border-b">
-            <td class="px-4 py-3" th:text="${doc.autor.nome}"></td>
-            <td class="px-4 py-3 font-semibold" th:text="${doc.titulo}"></td>
-            <td class="px-4 py-3" th:text="${doc.assunto}"></td>
-            <td class="px-4 py-3 text-gray-700" th:text="${doc.conteudo}"></td>
-            <td class="px-4 py-3 flex justify-center gap-3">
-              <a th:href="@{editarNoticia(idNoticia=${doc.id})}" 
-                 class="text-blue-700 hover:text-blue-900 transition" title="Editar">
-                <i data-lucide="edit" class="w-5 h-5"></i>
-              </a>
-              <a th:href="@{removerNoticia(idNoticia=${doc.id})}" 
-                 class="text-red-600 hover:text-red-800 transition" title="Remover">
-                <i data-lucide="trash-2" class="w-5 h-5"></i>
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- GRID DE NOTÍCIAS -->
+  <section class="section" style="padding-top:0;">
+    <div class="wrap">
+      <div class="grid-3" th:if="${noticias != null and !noticias.isEmpty()}">
+        <article class="card reveal" th:each="n : ${noticias}">
+          <a th:href="@{/detalheNoticia(idNoticia=${n.id})}">
+            <div class="media">
+              <img th:if="${n.urlImagem != null and !n.urlImagem.isEmpty()}" th:src="${n.urlImagem}" th:alt="${n.titulo}" style="width:100%;border-radius:var(--radius);aspect-ratio:16/9;object-fit:cover;">
+              <div th:unless="${n.urlImagem != null and !n.urlImagem.isEmpty()}" class="ph r16x9" data-label="Foto 16:9"></div>
+            </div>
+            <span class="kicker" th:classappend="${edMap.containsKey(n.assunto) ? edMap.get(n.assunto) : 'ed-geral'}" th:text="${n.assunto}">Editoria</span>
+            <h3 th:text="${n.titulo}">Título</h3>
+            <p class="dek" th:text="${#strings.abbreviate(n.conteudo, 140)}">Resumo…</p>
+            <div class="meta">
+              <span class="byline" th:text="${n.autor != null ? n.autor.nome : 'Redação'}">Autor</span>
+              <span class="dot"></span>
+              <span th:text="${n.dataCriacao != null ? #temporals.format(n.dataCriacao, 'dd MMM yyyy') : ''}">data</span>
+            </div>
+          </a>
+        </article>
+      </div>
+
+      <!-- ESTADO VAZIO -->
+      <div class="text-center" th:if="${noticias == null or noticias.isEmpty()}" style="padding:70px 0;">
+        <span class="kicker ed-geral" style="justify-content:center;">Sem resultados</span>
+        <h3 style="font-family:var(--serif);font-weight:700;color:var(--ink);font-size:26px;margin:12px 0;">Nenhuma notícia encontrada</h3>
+        <p style="color:var(--muted);">Tente remover o filtro ou cadastre uma nova matéria.</p>
+      </div>
     </div>
-  </main>
+  </section>
+</main>
 
-  <!-- FOOTER -->
-  <footer class="bg-gray-200 text-gray-700 text-center py-4 text-sm">
-    © 2025 Agência de Notícias Web. Todos os direitos reservados.
-  </footer>
-
-  <script>
-    lucide.createIcons();
-  </script>
+<th:block th:replace="~{_fragments :: footer}"></th:block>
+<th:block th:replace="~{_fragments :: scripts}"></th:block>
 </body>
 </html>

@@ -1,76 +1,51 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastrar Autor | Agência de Notícias Web</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" data-page="admin">
+<head th:replace="~{_fragments :: head('Novo autor — NÚCLEO')}"></head>
+<body>
+<th:block th:replace="~{_fragments :: chrome('admin')}"></th:block>
 
-  <!-- HEADER -->
-  <header class="bg-blue-900 text-white shadow-lg">
-    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-      <h1 class="text-2xl font-bold tracking-wide">📰 Agência de Notícias Web</h1>
-      <nav class="space-x-6">
-        <a href="cadastrarAutor" class="hover:text-yellow-300 transition">Cadastrar Autor</a>
-        <a href="cadastrarNoticia" class="hover:text-yellow-300 transition">Cadastrar Notícia</a>
-        <a href="listarNoticias" class="hover:text-yellow-300 transition">Listar Notícias</a>
+<main class="wrap" style="padding:0;">
+  <div class="admin-shell">
+    <aside class="admin-side">
+      <p class="side-head">Conteúdo</p>
+      <nav>
+        <a th:href="@{/admin}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Gerenciar notícias</a>
+        <a th:href="@{/cadastrarNoticia}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Nova notícia</a>
+        <a class="active" th:href="@{/cadastrarAutor}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg> Novo autor</a>
       </nav>
-    </div>
-  </header>
+    </aside>
 
-  <!-- CONTEÚDO PRINCIPAL -->
-  <main class="flex-grow flex flex-col items-center justify-center px-4">
-    <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-lg">
-      <h2 class="text-2xl font-semibold text-blue-900 text-center mb-6">
-        Cadastro de Autor
-      </h2>
+    <div class="admin-main">
+      <div class="panel-head">
+        <h1>Novo autor</h1>
+        <p>Cadastre um colaborador da redação.</p>
+      </div>
 
-      <form method="POST" action="cadastrarAutor" class="space-y-4">
-        <!-- Nome -->
-        <div>
-          <label for="nome" class="block text-gray-700 font-medium mb-1">
-            Nome do Autor
-          </label>
-          <input type="text" id="nome" name="nome"
-                 class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+      <form class="form-card" method="POST" th:action="@{/cadastrarAutor}">
+        <div class="form-grid">
+          <div class="field full">
+            <label for="nome">Nome completo</label>
+            <input id="nome" name="nome" class="input" type="text" placeholder="Ex.: Helena Vasconcelos" required>
+          </div>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" class="input" type="email" placeholder="nome@nucleo.com.br" required>
+          </div>
+          <div class="field">
+            <label for="dataNascimento">Data de nascimento</label>
+            <input id="dataNascimento" name="dataNascimento" class="input" type="date" required>
+          </div>
         </div>
-
-        <!-- E-mail -->
-        <div>
-          <label for="email" class="block text-gray-700 font-medium mb-1">
-            E-mail do Autor
-          </label>
-          <input type="email" id="email" name="email"
-                 class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
-        </div>
-
-        <!-- Data de Nascimento -->
-        <div>
-          <label for="dataNascimento" class="block text-gray-700 font-medium mb-1">
-            Data de Nascimento
-          </label>
-          <input type="date" id="dataNascimento" name="dataNascimento"
-                 class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
-        </div>
-
-        <!-- Botões -->
-        <div class="flex justify-between pt-4">
-          <a href="/" class="text-gray-600 hover:underline">← Voltar</a>
-          <button type="submit"
-                  class="bg-blue-900 text-white px-6 py-2 rounded-xl shadow-md hover:bg-blue-800 transition">
-            Cadastrar
-          </button>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Cadastrar autor</button>
+          <a class="btn btn-ghost" th:href="@{/admin}">Cancelar</a>
         </div>
       </form>
     </div>
-  </main>
+  </div>
+</main>
 
-  <!-- FOOTER -->
-  <footer class="bg-gray-200 text-gray-700 text-center py-4 text-sm">
-    © 2025 Agência de Notícias Web. Todos os direitos reservados.
-  </footer>
-
+<th:block th:replace="~{_fragments :: footer}"></th:block>
+<th:block th:replace="~{_fragments :: scripts}"></th:block>
 </body>
 </html>
