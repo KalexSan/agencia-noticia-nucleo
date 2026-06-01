@@ -1,0 +1,384 @@
+/* ---------- Auth / Login ---------- */
+.auth-stage {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 40px 20px;
+  background: var(--bg-section);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 40px 34px;
+}
+
+.auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-brand .brand {
+  margin-bottom: 10px;
+}
+
+.auth-brand .wordmark {
+  font-size: 40px;
+}
+
+.auth-brand .slogan {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.auth-card .field:last-of-type {
+  margin-bottom: 8px;
+}
+
+.auth-hint {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.auth-hint code {
+  font-family: var(--mono);
+  background: var(--bg-section);
+  padding: 2px 6px;
+  border-radius: 5px;
+  color: var(--ink);
+  font-size: 11.5px;
+}
+
+/* ===================== AUTORES (cards da equipe) ===================== */
+.author-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .2s;
+}
+
+.author-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: transparent;
+}
+
+.author-card .avatar {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 30px;
+  color: #fff;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.author-card h3 {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.author-card .email {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  word-break: break-all;
+  margin: 10px 0 4px;
+}
+
+.author-card .born {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.author-card .btn {
+  width: 100%;
+  margin-top: auto;
+}
+
+.av0 { background: linear-gradient(135deg, #2563eb, #1e40af); }
+.av1 { background: linear-gradient(135deg, #15803d, #0f766e); }
+.av2 { background: linear-gradient(135deg, #6d28d9, #4338ca); }
+.av3 { background: linear-gradient(135deg, #0e7490, #155e75); }
+.av4 { background: linear-gradient(135deg, #be123c, #9f1239); }
+.av5 { background: linear-gradient(135deg, #b45309, #92400e); }
+
+/* ===================== ALERTAS / FEEDBACK ===================== */
+.alert {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 13px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 28px;
+}
+
+.alert-success {
+  background: color-mix(in srgb, var(--ed-economia) 14%, transparent);
+  color: var(--ed-economia);
+}
+
+.alert-info {
+  background: color-mix(in srgb, var(--blue) 12%, transparent);
+  color: var(--blue);
+  font-size: 13.5px;
+  margin-bottom: 20px;
+}
+
+.alert-error {
+  background: color-mix(in srgb, var(--ed-cultura) 12%, transparent);
+  color: var(--ed-cultura);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Erro de login: espaçamento menor que o alerta padrão */
+.auth-error {
+  margin-bottom: 18px;
+}
+
+/* Linha de opções (manter conectado / esqueci a senha) */
+.auth-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 0 20px;
+}
+
+.auth-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.auth-remember input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--blue);
+}
+
+.auth-forgot {
+  font-size: 13px;
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.auth-submit {
+  width: 100%;
+}
+
+/* ===================== CABEÇALHO DE FORM (chip + título) ===================== */
+.form-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.form-head h3 {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 20px;
+}
+
+.form-lead {
+  color: var(--muted);
+  font-size: 13.5px;
+  margin-bottom: 18px;
+}
+
+.form-lead code {
+  font-family: var(--mono);
+  background: var(--bg-section);
+  padding: 2px 6px;
+  border-radius: 5px;
+  color: var(--ink);
+  font-size: 11.5px;
+}
+
+/* ===================== PAINEL — SEÇÕES / TABELAS ===================== */
+.admin-section + .admin-section {
+  margin-top: 46px;
+}
+
+.toolbar .count {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.admin-table td.cell-email {
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+
+.admin-table td.cell-msg {
+  max-width: 280px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+/* Estado vazio reutilizável dentro do painel */
+.empty-box {
+  text-align: center;
+  padding: 48px 0;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.empty-box p {
+  color: var(--muted);
+}
+
+.empty-box.empty-lg {
+  padding: 60px 0;
+}
+
+.empty-box.empty-lg h3 {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.empty-box.empty-lg p {
+  margin-bottom: 20px;
+}
+
+/* Badge de contagem na navegação lateral */
+.nav-badge {
+  margin-left: auto;
+  background: var(--blue);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+/* Marca "(você)" ao lado do autor */
+.own-tag {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* Coluna de ações alinhada à direita */
+.admin-table th.th-actions {
+  text-align: right;
+}
+
+/* Botão compacto dentro das linhas da tabela */
+.admin-table .btn.btn-row {
+  padding: 6px 12px;
+}
+
+/* Link em destaque dentro de texto */
+.link-strong {
+  color: var(--blue);
+  font-weight: 600;
+}
+
+/* ===================== LOGIN — voltar para Home ===================== */
+.auth-back {
+  margin-top: 18px;
+  text-align: center;
+}
+
+.auth-back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.auth-back a:hover {
+  color: var(--blue);
+}
+
+/* ===================== INTRO / TÍTULOS DE PÁGINA ===================== */
+.page-intro {
+  max-width: 680px;
+  margin-bottom: 34px;
+}
+
+.page-intro h2 {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--ink);
+  font-size: clamp(30px, 4.6vw, 46px);
+  line-height: 1.06;
+  margin: 12px 0;
+}
+
+.page-intro p {
+  font-size: 16.5px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Estado vazio de página inteira (não dentro do painel) */
+.empty-page {
+  text-align: center;
+  padding: 70px 0;
+}
+
+.empty-page .kicker {
+  justify-content: center;
+}
+
+.empty-page h3 {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 26px;
+  margin: 12px 0;
+}
+
+.empty-page p {
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+
+/* Espaçamentos utilitários usados nas páginas */
+.section-top {
+  padding-top: 34px;
+}
+
+.mb-form {
+  margin-bottom: 34px;
+}

@@ -1,0 +1,374 @@
+/* ============================================================
+   ADMIN (painel / formulários / tabela)
+   ============================================================ */
+.admin-shell {
+  display: grid;
+  grid-template-columns: 248px 1fr;
+  gap: 0;
+  min-height: 60vh;
+}
+
+.admin-side {
+  border-right: 1px solid var(--line);
+  padding: 30px 22px;
+}
+
+.admin-side .side-head {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 14px 10px;
+}
+
+.admin-side nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.admin-side a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+  transition: background .2s, color .2s;
+  cursor: pointer;
+}
+
+.admin-side a:hover {
+  background: var(--bg-section);
+}
+
+.admin-side a.active {
+  background: color-mix(in srgb, var(--blue) 12%, transparent);
+  color: var(--blue);
+}
+
+.admin-side a svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.admin-side .side-stat {
+  margin-top: 26px;
+  padding: 16px;
+  background: var(--bg-section);
+  border-radius: var(--radius);
+}
+
+.admin-side .side-stat b {
+  font-family: var(--serif);
+  font-size: 26px;
+  color: var(--ink);
+  display: block;
+  line-height: 1;
+}
+
+.admin-side .side-stat span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.admin-main {
+  padding: 34px clamp(20px, 4vw, 46px);
+}
+
+.panel-head {
+  margin-bottom: 24px;
+}
+
+.panel-head h1 {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--ink);
+  font-size: clamp(26px, 3.4vw, 38px);
+}
+
+.panel-head p {
+  color: var(--muted);
+  font-size: 14.5px;
+  margin-top: 6px;
+}
+
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  max-width: 760px;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 22px;
+}
+
+.form-grid .full {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.admin-table thead th {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 14px 18px;
+  background: var(--bg-section);
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-table td {
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 14px;
+  color: var(--text);
+  vertical-align: top;
+}
+
+.admin-table td .status-pill,
+.admin-table td .act-row {
+  margin-top: 2px;
+}
+
+.admin-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tbody tr {
+  transition: background .15s;
+}
+
+.admin-table tbody tr:hover {
+  background: var(--bg-section);
+}
+
+.admin-table .t-title {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.admin-table .t-date {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.act {
+  display: inline-flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  transition: all .18s var(--ease);
+}
+
+.icon-btn:hover {
+  color: var(--blue);
+  border-color: var(--blue);
+}
+
+.icon-btn.danger:hover {
+  color: var(--ed-cultura);
+  border-color: var(--ed-cultura);
+}
+
+.icon-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+@media (max-width:760px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-side {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .admin-side nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-side .side-stat {
+    display: none;
+  }
+}
+
+/* ---------- Status de notícia ---------- */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-pill::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.status-inativa {
+  color: var(--muted);
+  background: color-mix(in srgb, var(--muted) 14%, transparent);
+}
+
+.status-producao {
+  color: var(--ed-esportes);
+  background: color-mix(in srgb, var(--ed-esportes) 14%, transparent);
+}
+
+.status-concluida {
+  color: var(--ed-economia);
+  background: color-mix(in srgb, var(--ed-economia) 14%, transparent);
+}
+
+/* ---------- Badge "editada por admin" ---------- */
+.badge-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ed-politica);
+  background: color-mix(in srgb, var(--ed-politica) 12%, transparent);
+}
+
+.badge-admin svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ---------- Chip de usuário logado (topbar) ---------- */
+.user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.user-chip .uava {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--blue);
+}
+
+.user-chip .urole {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.topbar .sep {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, .18);
+}
+
+/* ---------- Segmented (troca de perfil — só demo no protótipo) ---------- */
+.seg {
+  display: inline-flex;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 999px;
+  padding: 2px;
+}
+
+.seg button {
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  padding: 4px 11px;
+  border-radius: 999px;
+  transition: all .2s var(--ease);
+}
+
+.seg button.on {
+  background: var(--blue);
+  color: #fff;
+}
+
