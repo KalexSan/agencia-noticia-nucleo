@@ -2,6 +2,53 @@
 (function () {
   "use strict";
 
+  /* ---------- Manter a posição do scroll após ações (sem pulo) ----------
+     Quando um botão de ação recarrega a página (POST/GET → redirect),
+     o navegador volta para o topo. Aqui guardamos a posição antes de sair
+     e restauramos no mesmo lugar ao recarregar a MESMA rota — sem animação. */
+  (function preserveScroll() {
+    if (!("sessionStorage" in window)) return;
+
+    // Evita que o navegador tente restaurar sozinho (gera o "pulo").
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+    var KEY = "nucleo-scroll:" + location.pathname;
+
+    // Salva a posição atual antes de qualquer navegação que recarregue a página.
+    function save() {
+      try {
+        sessionStorage.setItem(KEY, String(window.scrollY || window.pageYOffset || 0));
+      } catch (e) {}
+    }
+    window.addEventListener("pagehide", save);
+    window.addEventListener("beforeunload", save);
+
+    // Restaura assim que o DOM estiver pronto, sem animação (scroll-behavior off).
+    function restore() {
+      var raw = sessionStorage.getItem(KEY);
+      if (raw === null) return;
+      sessionStorage.removeItem(KEY);
+      var y = parseInt(raw, 10);
+      if (isNaN(y) || y <= 0) return;
+
+      var rootEl = document.documentElement;
+      var prev = rootEl.style.scrollBehavior;
+      rootEl.style.scrollBehavior = "auto"; // desliga o smooth para não animar
+      window.scrollTo(0, y);
+      // Reaplica após o layout assentar (imagens/fontes podem mudar a altura).
+      requestAnimationFrame(function () {
+        window.scrollTo(0, y);
+        rootEl.style.scrollBehavior = prev;
+      });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", restore);
+    } else {
+      restore();
+    }
+  })();
+
   /* ---------- Tema (claro / escuro / sistema) ---------- */
   const root = document.documentElement;
   const STORE = "nucleo-theme";

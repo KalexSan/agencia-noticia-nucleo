@@ -37,6 +37,7 @@ public class SolicitacaoController {
 			// no próprio formulário (alerta abaixo, no lugar do alerta de sucesso).
 			redirect.addFlashAttribute("solicitacaoErro", e.getMessage());
 		}
+		// A posição do scroll é restaurada no cliente (app.js).
 		return "redirect:/listarAutores";
 	}
 
@@ -67,6 +68,7 @@ public class SolicitacaoController {
 			return "erro";
 		}
 		solicitacaoService.rejeitar(idSolicitacao);
+		// A posição do scroll é restaurada no cliente (app.js).
 		return "redirect:/admin";
 	}
 

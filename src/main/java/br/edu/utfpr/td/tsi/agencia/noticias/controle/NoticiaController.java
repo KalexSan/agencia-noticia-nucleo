@@ -151,6 +151,7 @@ public class NoticiaController {
 				case REABRIR -> noticiaService.reabrir(idNoticia, logado);
 				case REMOVER -> noticiaService.remover(idNoticia, logado);
 			}
+			// A posição do scroll é restaurada no cliente (app.js), sem âncora.
 			return "redirect:/admin";
 		} catch (AcaoNaoPermitidaException e) {
 			model.addAttribute("motivo", e.getMessage());
