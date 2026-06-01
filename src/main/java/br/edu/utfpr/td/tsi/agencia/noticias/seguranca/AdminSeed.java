@@ -32,7 +32,7 @@ public class AdminSeed {
 			}
 			Autor admin = new Autor();
 			admin.setId(UUID.randomUUID().toString());
-			admin.setNome("Administrador");
+			admin.setNome("Alex Sander Admin");
 			admin.setEmail(EMAIL_ADMIN);
 			admin.setSenha(passwordEncoder.encode(SENHA_ADMIN));
 			admin.setPerfil(Perfil.ADMIN);
