@@ -39,10 +39,11 @@ class AutorServiceImplTest {
     void cadastrarDeveSalvarAutorComSenhaHashEPerfilAutorQuandoMaiorDeIdade() {
         Autor autor = new Autor();
         autor.setEmail("novo@nucleo.com.br");
+        autor.setSenha("segredo");
         autor.setDataNascimento(LocalDate.now().minusYears(25));
 
         when(autorRepository.existsByEmail("novo@nucleo.com.br")).thenReturn(false);
-        when(passwordEncoder.encode(AutorServiceImpl.SENHA_PADRAO_AUTOR)).thenReturn("hash");
+        when(passwordEncoder.encode("segredo")).thenReturn("hash");
 
         autorService.cadastrar(autor);
 
@@ -50,6 +51,18 @@ class AutorServiceImplTest {
         assertEquals(Perfil.AUTOR, autor.getPerfil());
         assertEquals("hash", autor.getSenha());
         verify(autorRepository).save(autor);
+    }
+
+    @Test
+    void cadastrarDeveLancarExcecaoQuandoSenhaEmBranco() {
+        Autor autor = new Autor();
+        autor.setEmail("sem-senha@nucleo.com.br");
+        autor.setDataNascimento(LocalDate.now().minusYears(30));
+
+        when(autorRepository.existsByEmail("sem-senha@nucleo.com.br")).thenReturn(false);
+
+        assertThrows(RuntimeException.class, () -> autorService.cadastrar(autor));
+        verify(autorRepository, never()).save(autor);
     }
 
     @Test

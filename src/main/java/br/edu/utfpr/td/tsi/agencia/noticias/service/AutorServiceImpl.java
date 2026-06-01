@@ -16,9 +16,6 @@ import br.edu.utfpr.td.tsi.agencia.noticias.persistencia.AutorRepository;
 @Service
 public class AutorServiceImpl implements AutorService {
 
-	/** Senha provisória atribuída a autores cadastrados pelo painel sem senha própria. */
-	public static final String SENHA_PADRAO_AUTOR = "nucleo123";
-
 	@Autowired
 	private AutorRepository autorRepository;
 
@@ -39,16 +36,18 @@ public class AutorServiceImpl implements AutorService {
 			throw new RuntimeException("Já existe um usuário com este e-mail");
 		}
 
+		// Senha é obrigatória no cadastro.
+		if (autor.getSenha() == null || autor.getSenha().isBlank()) {
+			throw new RuntimeException("A senha é obrigatória");
+		}
+
 		// Perfil padrão: AUTOR (cadastro pelo painel cria colaboradores da redação).
 		if (autor.getPerfil() == null) {
 			autor.setPerfil(Perfil.AUTOR);
 		}
 
-		// Senha: usa a informada ou a provisória padrão; sempre gravada como hash.
-		String senhaBruta = (autor.getSenha() == null || autor.getSenha().isBlank())
-				? SENHA_PADRAO_AUTOR
-				: autor.getSenha();
-		autor.setSenha(passwordEncoder.encode(senhaBruta));
+		// Senha sempre gravada como hash, nunca em texto puro.
+		autor.setSenha(passwordEncoder.encode(autor.getSenha()));
 
 		autor.setId(UUID.randomUUID().toString());
 		autorRepository.save(autor);

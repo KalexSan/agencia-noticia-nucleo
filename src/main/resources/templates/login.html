@@ -15,8 +15,7 @@
       <span class="slogan">Painel da redação</span>
     </div>
 
-    <div th:if="${erroLogin != null}" th:text="${erroLogin}"
-         style="background:color-mix(in srgb,var(--ed-cultura) 12%,transparent);color:var(--ed-cultura);font-size:13px;font-weight:600;padding:11px 14px;border-radius:var(--radius-sm);margin-bottom:18px;text-align:center;">
+    <div th:if="${erroLogin != null}" th:text="${erroLogin}" class="alert alert-error auth-error">
       E-mail ou senha inválidos.
     </div>
 
@@ -29,13 +28,13 @@
         <label for="senha">Senha</label>
         <input id="senha" name="senha" class="input" type="password" placeholder="••••••••" required>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin:6px 0 20px;">
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);font-weight:500;cursor:pointer;">
-          <input type="checkbox" name="lembrar" style="width:16px;height:16px;accent-color:var(--blue);"> Manter conectado
+      <div class="auth-options">
+        <label class="auth-remember">
+          <input type="checkbox" name="lembrar"> Manter conectado
         </label>
-        <a href="#" style="font-size:13px;color:var(--blue);font-weight:600;">Esqueci a senha</a>
+        <a href="#" class="auth-forgot">Esqueci a senha</a>
       </div>
-      <button type="submit" class="btn btn-primary" style="width:100%;">
+      <button type="submit" class="btn btn-primary auth-submit">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg>
         Entrar
       </button>
@@ -45,6 +44,13 @@
       Acesso restrito à equipe. Cada conta tem um perfil:<br>
       <code>ADMIN</code> gerencia tudo · <code>AUTOR</code> gerencia as próprias matérias.
     </p>
+
+    <div class="auth-back">
+      <a th:href="@{/}">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar para a Home
+      </a>
+    </div>
   </div>
 </div>
 

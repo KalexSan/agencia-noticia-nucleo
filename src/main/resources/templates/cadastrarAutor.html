@@ -21,19 +21,31 @@
         <p>Cadastre um colaborador da redação.</p>
       </div>
 
+      <!-- Aviso quando o cadastro vem de uma solicitação aprovada -->
+      <div th:if="${preEmail != null}" class="alert alert-info">
+        Solicitação aprovada — confira os dados e defina a senha de acesso para concluir o cadastro.
+      </div>
+
       <form class="form-card" method="POST" th:action="@{/cadastrarAutor}">
         <div class="form-grid">
           <div class="field full">
             <label for="nome">Nome completo</label>
-            <input id="nome" name="nome" class="input" type="text" placeholder="Ex.: Helena Vasconcelos" required>
+            <input id="nome" name="nome" class="input" type="text" placeholder="Ex.: Helena Vasconcelos"
+                   th:value="${preNome}" required>
           </div>
           <div class="field">
-            <label for="email">E-mail</label>
-            <input id="email" name="email" class="input" type="email" placeholder="nome@nucleo.com.br" required>
+            <label for="email">E-mail <span class="hint">(login)</span></label>
+            <input id="email" name="email" class="input" type="email" placeholder="nome@nucleo.com.br"
+                   th:value="${preEmail}" required>
           </div>
           <div class="field">
+            <label for="senha">Senha de acesso</label>
+            <input id="senha" name="senha" class="input" type="password" placeholder="••••••••" minlength="6" required>
+          </div>
+          <div class="field full">
             <label for="dataNascimento">Data de nascimento</label>
-            <input id="dataNascimento" name="dataNascimento" class="input" type="date" required>
+            <input id="dataNascimento" name="dataNascimento" class="input" type="date"
+                   th:value="${preDataNascimento != null ? #temporals.format(preDataNascimento,'yyyy-MM-dd') : ''}" required>
           </div>
         </div>
         <div class="form-actions">

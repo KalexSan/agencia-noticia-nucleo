@@ -19,6 +19,7 @@ import br.edu.utfpr.td.tsi.agencia.noticias.seguranca.SessaoUtil;
 import br.edu.utfpr.td.tsi.agencia.noticias.service.AcaoNaoPermitidaException;
 import br.edu.utfpr.td.tsi.agencia.noticias.service.AutorService;
 import br.edu.utfpr.td.tsi.agencia.noticias.service.NoticiaService;
+import br.edu.utfpr.td.tsi.agencia.noticias.service.SolicitacaoAutorService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -33,6 +34,9 @@ class NoticiaControllerTest {
 
     @Mock
     private SessaoUtil sessaoUtil;
+
+    @Mock
+    private SolicitacaoAutorService solicitacaoService;
 
     @Mock
     private HttpSession session;
@@ -117,10 +121,11 @@ class NoticiaControllerTest {
     }
 
     @Test
-    void adminDeveListarParaPainelEAutores() {
-        Autor logado = new Autor();
+    void adminAutorVeApenasAsSuasNoticias() {
+        Autor logado = new Autor(); // sem perfil ADMIN
         List<Noticia> noticias = List.of(new Noticia());
         when(sessaoUtil.getUsuarioLogado(session)).thenReturn(logado);
+        when(sessaoUtil.ehAdmin(logado)).thenReturn(false);
         when(noticiaService.listarParaPainel(logado)).thenReturn(noticias);
         when(autorService.listarTodos()).thenReturn(List.of());
 
@@ -128,6 +133,26 @@ class NoticiaControllerTest {
 
         assertEquals("admin", view);
         verify(model).addAttribute("noticias", noticias);
+    }
+
+    @Test
+    void adminAdminVeListasSeparadasDeConcluidasEPendentes() {
+        Autor admin = new Autor();
+        List<Noticia> concluidas = List.of(new Noticia());
+        List<Noticia> pendentes = List.of(new Noticia());
+        when(sessaoUtil.getUsuarioLogado(session)).thenReturn(admin);
+        when(sessaoUtil.ehAdmin(admin)).thenReturn(true);
+        when(noticiaService.listarConcluidas()).thenReturn(concluidas);
+        when(noticiaService.listarPendentes()).thenReturn(pendentes);
+        when(solicitacaoService.listarPendentes()).thenReturn(List.of());
+        when(autorService.listarTodos()).thenReturn(List.of());
+
+        String view = noticiaController.admin(session, model);
+
+        assertEquals("admin", view);
+        verify(model).addAttribute("noticiasConcluidas", concluidas);
+        verify(model).addAttribute("noticiasPendentes", pendentes);
+        verify(model).addAttribute("solicitacoes", List.of());
     }
 
     @Test

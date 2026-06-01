@@ -15,6 +15,7 @@ import br.edu.utfpr.td.tsi.agencia.noticias.seguranca.SessaoUtil;
 import br.edu.utfpr.td.tsi.agencia.noticias.service.AcaoNaoPermitidaException;
 import br.edu.utfpr.td.tsi.agencia.noticias.service.AutorService;
 import br.edu.utfpr.td.tsi.agencia.noticias.service.NoticiaService;
+import br.edu.utfpr.td.tsi.agencia.noticias.service.SolicitacaoAutorService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -29,6 +30,9 @@ public class NoticiaController {
 
 	@Autowired
 	private SessaoUtil sessaoUtil;
+
+	@Autowired
+	private SolicitacaoAutorService solicitacaoService;
 
 	// ===================== ROTAS PÚBLICAS =====================
 
@@ -56,8 +60,17 @@ public class NoticiaController {
 	@GetMapping(value = "/admin")
 	public String admin(HttpSession session, Model model) {
 		Autor logado = sessaoUtil.getUsuarioLogado(session);
-		model.addAttribute("noticias", noticiaService.listarParaPainel(logado));
 		model.addAttribute("autores", autorService.listarTodos());
+
+		if (sessaoUtil.ehAdmin(logado)) {
+			// ADMIN: duas listagens separadas — concluídas e pendentes (aprovar).
+			model.addAttribute("noticiasConcluidas", noticiaService.listarConcluidas());
+			model.addAttribute("noticiasPendentes", noticiaService.listarPendentes());
+			model.addAttribute("solicitacoes", solicitacaoService.listarPendentes());
+		} else {
+			// AUTOR: vê apenas as próprias matérias.
+			model.addAttribute("noticias", noticiaService.listarParaPainel(logado));
+		}
 		return "admin";
 	}
 

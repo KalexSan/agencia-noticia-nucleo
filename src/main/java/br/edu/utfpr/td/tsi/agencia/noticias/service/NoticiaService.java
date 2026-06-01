@@ -26,6 +26,12 @@ public interface NoticiaService {
 	/** Painel: ADMIN vê todas; AUTOR vê só as suas. Autor resolvido em cada uma. */
 	List<Noticia> listarParaPainel(Autor logado);
 
+	/** Painel ADMIN — aba "Gerenciar": apenas CONCLUIDA, com autor resolvido. */
+	List<Noticia> listarConcluidas();
+
+	/** Painel ADMIN — aba "Aprovar": pendentes (EM_PRODUCAO + INATIVA). */
+	List<Noticia> listarPendentes();
+
 	/** Cria a notícia aplicando as regras de status por perfil. */
 	void criar(Noticia noticia, Autor logado);
 

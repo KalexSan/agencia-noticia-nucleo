@@ -1,103 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" data-page="autores">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" data-page="autores"
+      th:with="ehAdmin=${usuarioLogado != null and usuarioLogado.perfil != null and usuarioLogado.perfil.name() == 'ADMIN'}">
 
 <head th:replace="~{_fragments :: head('Autores — NÚCLEO')}"></head>
 
 <body>
   <th:block th:replace="~{_fragments :: chrome('autores')}"></th:block>
 
-  <style>
-    .author-card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      padding: 26px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .2s;
-    }
-
-    .author-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-      border-color: transparent;
-    }
-
-    .author-card .avatar {
-      width: 78px;
-      height: 78px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      font-family: var(--sans);
-      font-weight: 700;
-      font-size: 30px;
-      color: #fff;
-      margin-bottom: 16px;
-      text-transform: uppercase;
-    }
-
-    .author-card h3 {
-      font-family: var(--serif);
-      font-size: 21px;
-      font-weight: 700;
-      color: var(--ink);
-    }
-
-    .author-card .email {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
-      word-break: break-all;
-      margin: 10px 0 4px;
-    }
-
-    .author-card .born {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-
-    .author-card .btn {
-      width: 100%;
-      margin-top: auto;
-    }
-
-    .av0 {
-      background: linear-gradient(135deg, #2563eb, #1e40af);
-    }
-
-    .av1 {
-      background: linear-gradient(135deg, #15803d, #0f766e);
-    }
-
-    .av2 {
-      background: linear-gradient(135deg, #6d28d9, #4338ca);
-    }
-
-    .av3 {
-      background: linear-gradient(135deg, #0e7490, #155e75);
-    }
-
-    .av4 {
-      background: linear-gradient(135deg, #be123c, #9f1239);
-    }
-
-    .av5 {
-      background: linear-gradient(135deg, #b45309, #92400e);
-    }
-  </style>
-
   <main>
-    <section class="wrap" style="padding-top:34px;">
-      <div style="max-width:680px;margin-bottom:34px;">
+    <section class="wrap section-top">
+      <div class="page-intro">
         <span class="kicker ed-geral">Equipe</span>
-        <h2
-          style="font-family:var(--serif);font-weight:700;color:var(--ink);font-size:clamp(30px,4.6vw,46px);line-height:1.06;margin:12px 0;">
-          Quem escreve na Núcleo</h2>
-        <p style="font-size:16.5px;color:var(--text);line-height:1.6;">Jornalistas dedicados à apuração precisa e à
+        <h2>Quem escreve na Núcleo</h2>
+        <p>Jornalistas dedicados à apuração precisa e à
           linguagem clara. Conheça os profissionais por trás das nossas reportagens.</p>
       </div>
 
@@ -113,13 +28,54 @@
         </article>
       </div>
 
-      <!-- ESTADO VAZIO -->
-      <div class="text-center" th:if="${autores == null or autores.isEmpty()}" style="padding:70px 0;">
-        <span class="kicker ed-geral" style="justify-content:center;">Equipe</span>
-        <h3 style="font-family:var(--serif);font-weight:700;color:var(--ink);font-size:26px;margin:12px 0;">Nenhum autor
-          cadastrado</h3>
-        <p style="color:var(--muted);margin-bottom:22px;">Cadastre o primeiro colaborador pelo painel administrativo.
+      <!-- ===== MENSAGEM DE SUCESSO (pedido enviado) ===== -->
+      <div th:if="${solicitacaoEnviada != null}" th:text="${solicitacaoEnviada}" class="alert alert-success">
+        Pedido enviado!
+      </div>
+
+      <!-- ===== FORM DE SOLICITAÇÃO (apenas visitante NÃO logado) ===== -->
+      <div th:if="${usuarioLogado == null}" class="form-card mb-form">
+        <div class="form-head">
+          <span class="kicker ed-tecnologia">Quero ser autor</span>
+          <h3>Solicitar cadastro</h3>
+        </div>
+        <p class="form-lead">
+          Deseja escrever na Núcleo? Envie seus dados. Um administrador vai avaliar o pedido
+          e, se aprovado, criará sua conta de acesso.
         </p>
+        <form method="POST" th:action="@{/solicitarAutor}">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="sol-nome">Nome completo</label>
+              <input id="sol-nome" name="nome" class="input" type="text" placeholder="Ex.: Helena Vasconcelos" required>
+            </div>
+            <div class="field">
+              <label for="sol-email">E-mail</label>
+              <input id="sol-email" name="email" class="input" type="email" placeholder="nome@exemplo.com" required>
+            </div>
+            <div class="field">
+              <label for="sol-data">Data de nascimento</label>
+              <input id="sol-data" name="dataNascimento" class="input" type="date" required>
+            </div>
+            <div class="field full">
+              <label for="sol-msg">Mensagem <span class="hint">(conte sobre você e suas áreas)</span></label>
+              <textarea id="sol-msg" name="mensagem" class="textarea" placeholder="Sobre que assuntos você gostaria de escrever?"></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              Enviar solicitação
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ESTADO VAZIO -->
+      <div class="empty-page" th:if="${autores == null or autores.isEmpty()}">
+        <span class="kicker ed-geral">Equipe</span>
+        <h3>Nenhum autor cadastrado</h3>
+        <p>Cadastre o primeiro colaborador pelo painel administrativo.</p>
         <a class="btn btn-primary" th:href="@{/cadastrarAutor}">Cadastrar autor</a>
       </div>
     </section>

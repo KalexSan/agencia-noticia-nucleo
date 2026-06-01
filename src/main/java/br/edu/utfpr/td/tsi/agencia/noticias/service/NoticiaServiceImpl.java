@@ -62,6 +62,18 @@ public class NoticiaServiceImpl implements NoticiaService {
 		return resolverAutores(noticias);
 	}
 
+	@Override
+	public List<Noticia> listarConcluidas() {
+		return listarPublicas(); // CONCLUIDA já resolve autor
+	}
+
+	@Override
+	public List<Noticia> listarPendentes() {
+		List<Noticia> pendentes = noticiaRepository.findByStatus(StatusNoticia.EM_PRODUCAO);
+		pendentes.addAll(noticiaRepository.findByStatus(StatusNoticia.INATIVA));
+		return resolverAutores(pendentes);
+	}
+
 	// ===================== CRIAÇÃO =====================
 
 	@Override

@@ -32,6 +32,9 @@ public class WebConfig implements WebMvcConfigurer {
 						"/removerNoticia",
 						"/aprovarNoticia",
 						"/reabrirNoticia",
-						"/cadastrarAutor");
+						"/cadastrarAutor",
+						"/aprovarSolicitacao",
+						"/rejeitarSolicitacao");
+		// Obs.: /solicitarAutor é público (visitante envia o pedido).
 	}
 }
