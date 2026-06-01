@@ -15,13 +15,13 @@ import br.edu.utfpr.td.tsi.agencia.noticias.persistencia.AutorRepository;
 /**
  * Cria um ADMIN inicial se a coleção de usuários estiver vazia,
  * para permitir o primeiro login no painel.
- *   e-mail: admin@nucleo.com.br
- *   senha:  admin123  (provisória — troque depois)
+ * e-mail: redacaoadmin@nucleo.com.br
+ * senha: admin123 (provisória — troque depois)
  */
 @Configuration
 public class AdminSeed {
 
-	public static final String EMAIL_ADMIN = "admin@nucleo.com.br";
+	public static final String EMAIL_ADMIN = "redacaoadmin@nucleo.com.br";
 	public static final String SENHA_ADMIN = "admin123";
 
 	@Bean
