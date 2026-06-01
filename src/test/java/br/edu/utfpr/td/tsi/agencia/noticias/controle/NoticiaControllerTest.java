@@ -1,17 +1,13 @@
 package br.edu.utfpr.td.tsi.agencia.noticias.controle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,17 +15,27 @@ import org.springframework.ui.Model;
 
 import br.edu.utfpr.td.tsi.agencia.noticias.modelo.Autor;
 import br.edu.utfpr.td.tsi.agencia.noticias.modelo.Noticia;
-import br.edu.utfpr.td.tsi.agencia.noticias.persistencia.AutorRepository;
-import br.edu.utfpr.td.tsi.agencia.noticias.persistencia.NoticiaRepository;
+import br.edu.utfpr.td.tsi.agencia.noticias.seguranca.SessaoUtil;
+import br.edu.utfpr.td.tsi.agencia.noticias.service.AcaoNaoPermitidaException;
+import br.edu.utfpr.td.tsi.agencia.noticias.service.AutorService;
+import br.edu.utfpr.td.tsi.agencia.noticias.service.NoticiaService;
+
+import jakarta.servlet.http.HttpSession;
 
 @ExtendWith(MockitoExtension.class)
 class NoticiaControllerTest {
 
     @Mock
-    private AutorRepository autorRepository;
+    private AutorService autorService;
 
     @Mock
-    private NoticiaRepository noticiaRepository;
+    private NoticiaService noticiaService;
+
+    @Mock
+    private SessaoUtil sessaoUtil;
+
+    @Mock
+    private HttpSession session;
 
     @Mock
     private Model model;
@@ -40,7 +46,7 @@ class NoticiaControllerTest {
     @Test
     void exibirPaginaCadastrarNoticiaDeveAdicionarAutoresNoModelo() {
         List<Autor> autores = List.of(new Autor());
-        when(autorRepository.findAll()).thenReturn(autores);
+        when(autorService.listarTodos()).thenReturn(autores);
 
         String view = noticiaController.exibirPaginaCadastrarNoticia(model);
 
@@ -49,67 +55,138 @@ class NoticiaControllerTest {
     }
 
     @Test
-    void cadastrarDocumentoDeveGerarIdDataEInserirNoticia() {
+    void cadastrarDocumentoDeveDelegarAoServicoERedirecionarParaAdmin() {
         Noticia noticia = new Noticia();
+        Autor logado = new Autor();
+        when(sessaoUtil.getUsuarioLogado(session)).thenReturn(logado);
 
-        String view = noticiaController.cadastrarDocumento(noticia);
+        String view = noticiaController.cadastrarDocumento(noticia, session, model);
 
-        assertEquals("index", view);
-        assertNotNull(noticia.getId());
-        assertEquals(LocalDate.now(), noticia.getDataCriacao());
-        verify(noticiaRepository).insert(noticia);
+        assertEquals("redirect:/admin", view);
+        verify(noticiaService).criar(noticia, logado);
     }
 
     @Test
-    void exibirPaginaListarNoticiasDeveResolverAutorEmCadaNoticia() {
-        Autor autor = new Autor();
-        autor.setId("autor-1");
-
+    void cadastrarDocumentoDeveIrParaErroQuandoAcaoNaoPermitida() {
         Noticia noticia = new Noticia();
-        Autor autorSomenteComId = new Autor();
-        autorSomenteComId.setId("autor-1");
-        noticia.setAutor(autorSomenteComId);
+        Autor logado = new Autor();
+        when(sessaoUtil.getUsuarioLogado(session)).thenReturn(logado);
+        org.mockito.Mockito.doThrow(new AcaoNaoPermitidaException("nao pode"))
+                .when(noticiaService).criar(noticia, logado);
 
-        List<Noticia> noticias = List.of(noticia);
-        when(noticiaRepository.findAll()).thenReturn(noticias);
-        when(autorRepository.findById("autor-1")).thenReturn(Optional.of(autor));
+        String view = noticiaController.cadastrarDocumento(noticia, session, model);
 
-        String view = noticiaController.exibirPaginaListarNoticias(model);
+        assertEquals("erro", view);
+        verify(model).addAttribute("motivo", "nao pode");
+    }
+
+    @Test
+    void exibirPaginaListarNoticiasSemFiltroDeveListarPublicas() {
+        List<Noticia> publicas = List.of(new Noticia());
+        when(noticiaService.listarPublicas()).thenReturn(publicas);
+        when(autorService.listarTodos()).thenReturn(List.of());
+
+        String view = noticiaController.exibirPaginaListarNoticias(null, model);
 
         assertEquals("listarNoticias", view);
-        assertEquals(autor, noticia.getAutor());
-        verify(model).addAttribute("noticias", noticias);
+        verify(model).addAttribute("noticias", publicas);
+        verify(model).addAttribute("idAutorSelecionado", (String) null);
     }
 
     @Test
-    void removerDocumentosDeveExcluirNoticiaPorId() {
-        String view = noticiaController.removerDocumentos("noticia-1");
+    void exibirPaginaListarNoticiasComFiltroDeveListarPublicasPorAutor() {
+        List<Noticia> publicas = List.of(new Noticia());
+        when(noticiaService.listarPublicasPorAutor("autor-1")).thenReturn(publicas);
+        when(autorService.listarTodos()).thenReturn(List.of());
 
-        assertEquals("index", view);
-        verify(noticiaRepository).deleteById("noticia-1");
+        String view = noticiaController.exibirPaginaListarNoticias("autor-1", model);
+
+        assertEquals("listarNoticias", view);
+        verify(model).addAttribute("noticias", publicas);
     }
 
     @Test
-    void mostrarpaginaEditaNoticiaDeveAdicionarNoticiaNoModelo() {
+    void detalheDeveAdicionarNoticiaPublicaNoModelo() {
         Noticia noticia = new Noticia();
-        when(noticiaRepository.findById("noticia-1")).thenReturn(Optional.of(noticia));
+        when(noticiaService.buscarPublicaPorId("noticia-1")).thenReturn(noticia);
 
-        String view = noticiaController.mostrarpaginaEditaNoticia("noticia-1", model);
+        String view = noticiaController.detalhe("noticia-1", model);
 
-        assertEquals("editarNoticia", view);
+        assertEquals("detalheNoticia", view);
         verify(model).addAttribute("noticia", noticia);
     }
 
     @Test
-    void editaNoticiaDeveSalvarENavegarParaLista() {
+    void adminDeveListarParaPainelEAutores() {
+        Autor logado = new Autor();
+        List<Noticia> noticias = List.of(new Noticia());
+        when(sessaoUtil.getUsuarioLogado(session)).thenReturn(logado);
+        when(noticiaService.listarParaPainel(logado)).thenReturn(noticias);
+        when(autorService.listarTodos()).thenReturn(List.of());
+
+        String view = noticiaController.admin(session, model);
+
+        assertEquals("admin", view);
+        verify(model).addAttribute("noticias", noticias);
+    }
+
+    @Test
+    void removerDocumentosDeveDelegarAoServicoERedirecionar() {
+        Autor logado = new Autor();
+        when(sessaoUtil.getUsuarioLogado(session)).thenReturn(logado);
+
+        String view = noticiaController.removerDocumentos("noticia-1", session, model);
+
+        assertEquals("redirect:/admin", view);
+        verify(noticiaService).remover("noticia-1", logado);
+    }
+
+    @Test
+    void aprovarDeveDelegarAoServicoERedirecionar() {
+        Autor logado = new Autor();
+        when(sessaoUtil.getUsuarioLogado(session)).thenReturn(logado);
+
+        String view = noticiaController.aprovar("noticia-1", session, model);
+
+        assertEquals("redirect:/admin", view);
+        verify(noticiaService).aprovar("noticia-1", logado);
+    }
+
+    @Test
+    void reabrirDeveDelegarAoServicoERedirecionar() {
+        Autor logado = new Autor();
+        when(sessaoUtil.getUsuarioLogado(session)).thenReturn(logado);
+
+        String view = noticiaController.reabrir("noticia-1", session, model);
+
+        assertEquals("redirect:/admin", view);
+        verify(noticiaService).reabrir("noticia-1", logado);
+    }
+
+    @Test
+    void mostrarPaginaEditaNoticiaDeveMarcarVistoEAdicionarNoModelo() {
+        Autor logado = new Autor();
         Noticia noticia = new Noticia();
+        when(sessaoUtil.getUsuarioLogado(session)).thenReturn(logado);
+        when(noticiaService.buscarPorId("noticia-1")).thenReturn(noticia);
+        when(autorService.listarTodos()).thenReturn(List.of());
 
-        String view = noticiaController.editaNoticia("noticia-1", noticia);
+        String view = noticiaController.mostrarPaginaEditaNoticia("noticia-1", session, model);
 
-        assertEquals("redirect:listarNoticias", view);
+        assertEquals("editarNoticia", view);
+        verify(noticiaService).marcarVistoPeloAutor("noticia-1", logado);
+        verify(model).addAttribute("noticia", noticia);
+    }
 
-        ArgumentCaptor<Noticia> captor = ArgumentCaptor.forClass(Noticia.class);
-        verify(noticiaRepository).save(captor.capture());
-        assertEquals(noticia, captor.getValue());
+    @Test
+    void editaNoticiaDeveDelegarAoServicoERedirecionarParaAdmin() {
+        Noticia noticia = new Noticia();
+        Autor logado = new Autor();
+        when(sessaoUtil.getUsuarioLogado(session)).thenReturn(logado);
+
+        String view = noticiaController.editaNoticia("noticia-1", noticia, session, model);
+
+        assertEquals("redirect:/admin", view);
+        verify(noticiaService).editar("noticia-1", noticia, logado);
     }
 }

@@ -3,6 +3,7 @@ package br.edu.utfpr.td.tsi.agencia.noticias.modelo;
 import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,7 +13,10 @@ public class Autor {
 	@Id
 	private String id;
 	private String nome;
-	private String email;
+	@Indexed(unique = true)
+	private String email;        // login — único
+	private String senha;        // hash BCrypt, nunca texto puro
+	private Perfil perfil;       // ADMIN ou AUTOR
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataNascimento;
 
@@ -38,6 +42,22 @@ public class Autor {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	public Perfil getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(Perfil perfil) {
+		this.perfil = perfil;
 	}
 
 	public LocalDate getDataNascimento() {
